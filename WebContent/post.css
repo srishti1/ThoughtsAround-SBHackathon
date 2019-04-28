@@ -1,0 +1,54 @@
+
+
+body {
+	font-family: 'Muli', sans-serif;
+}
+
+.logo {
+	text-align: center;
+}
+
+.logo img {
+	width: 25%;
+}
+
+.post {
+
+	width: 600px;
+	height: 600px;
+	top: 50%;
+	left: 70%;
+	position: absolute;
+	margin-top: -300px;
+	margin-left: -300px;
+	border-style: solid;
+	border-width: 5px;
+	display: flex;
+	flex-direction: column;
+	text-align: center;
+}
+
+.child {
+	margin: auto;
+	font-family: 'Muli', sans-serif;
+}
+
+#heading {
+	font-size: 50px;
+	align-self: flex-start;
+}
+
+.content{
+	display: flex; 
+	align-items: row; 
+	justify-content: flex-start;
+}
+
+ #map {
+ 	   
+       height: 600px; 
+       width: 600px;
+  		margin-top: 50px;
+       left: 10%;
+
+      }

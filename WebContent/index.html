@@ -1,0 +1,179 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="index.css" />
+
+</head>
+
+<body>
+	<div class="logo">
+		<img src="logo.jpg"></img>
+	</div>
+	<div class="link">
+		<a href="http://localhost:8080/WomXn_Hacks/post.html">post</a>
+	</div>
+	<div id="map"></div>
+	<input id="pac-input" class="controls" type="text"
+		placeholder="Search Box">
+	<button id ="submit" type="submit" onclick="getPictures()">submit</button>
+	<script src="https://www.gstatic.com/firebasejs/5.8.1/firebase-app.js"></script>
+	<script
+		src="https://www.gstatic.com/firebasejs/5.8.1/firebase-database.js"></script>
+	<script>
+		var config = {
+			apiKey : "AIzaSyA0IBYUfRDpWFS13uxcR-pY23MxYHhks0E",
+			authDomain : "thoughtsaround-a1a03.firebaseapp.com",
+			databaseURL : "https://thoughtsaround-a1a03.firebaseio.com",
+			projectId : "thoughtsaround-a1a03",
+			storageBucket : "thoughtsaround-a1a03.appspot.com",
+			messagingSenderId : "616965589308"
+		};
+		firebase.initializeApp(config);
+		var database = firebase.database();
+
+		function getPictures() {
+			/* 		var image = firebase.database().ref('/Location/' + );
+			 */ var place = getPlaces();
+			console.log(place); 
+			var query = firebase.database().ref('/Location/' + place).orderByKey();
+			query.once("value")
+			  .then(function(snapshot) {
+			    snapshot.forEach(function(childSnapshot) {
+			      // key will be "ada" the first time and "alan" the second time
+			      var key = childSnapshot.key;
+			      // childData will be the actual contents of the child
+			      var childData = childSnapshot.val();
+			      var caption = childData.Caption; 
+			      var img = childData.Picture;
+			      
+			      
+			      var div = document.createElement("div");
+			      div.setAttribute('class', 'item');
+			      div.innerHTML = '<img src=' + img + '></img>';
+			      document.getElementById("container").appendChild(div);
+			      console.log(div);
+			      
+
+			  	
+			  });
+			});
+		}
+	</script>
+
+
+	<script>
+		// Initialize and add the map
+		var places;
+		function initMap() {
+			var myLatlng = new google.maps.LatLng(34.420830, -119.698189);
+			var mapOptions = {
+				zoom : 6,
+				center : myLatlng
+			}
+			var map = new google.maps.Map(document.getElementById("map"),
+					mapOptions);
+			var options = {
+				types : [ 'cities' ]
+			//this should work !
+			};
+
+			// Create the search box and link it to the UI element.
+			var input = document.getElementById('pac-input');
+			var searchBox = new google.maps.places.SearchBox(input, options);
+			map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+			// Bias the autocomplete results towards current map's viewport.
+			map.addListener('bounds_changed', function() {
+				searchBox.setBounds(map.getBounds());
+			});
+			var markers = [];
+			// Listen for the event fired when the user selects a prediction and retrieve
+			// more details for that place.
+
+			searchBox.addListener('places_changed', function() {
+				places = searchBox.getPlaces();
+
+				if (places.length == 0) {
+					return;
+				}
+				// Clear out the old markers.
+				markers.forEach(function(marker) {
+					marker.setMap(null);
+				});
+				markers = [];
+
+				// For each place, get the icon, name and location.
+				var bounds = new google.maps.LatLngBounds();
+				places.forEach(function(place) {
+
+					if (!place.geometry) {
+						console.log("Returned place contains no geometry");
+						return;
+					}
+
+					var icon = {
+						url : place.icon,
+						size : new google.maps.Size(71, 71),
+						origin : new google.maps.Point(0, 0),
+						anchor : new google.maps.Point(17, 34),
+						scaledSize : new google.maps.Size(25, 25)
+					};
+					// Create a marker for each place.
+					markers.push(new google.maps.Marker({
+						map : map,
+						icon : icon,
+						title : place.name,
+						position : place.geometry.location
+					}));
+
+					if (place.geometry.viewport) {
+						// Only geocodes have viewport.
+						bounds.union(place.geometry.viewport);
+					} else {
+						bounds.extend(place.geometry.location);
+					}
+				});
+
+				map.fitBounds(bounds);
+			});
+
+		}
+		
+		function getPlaces(){
+			/* console.log(places[0].address_components[0].short_name) */
+			return places[0].address_components[0].short_name;
+		}
+
+	</script>
+	<script
+		src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBIrYkaJggpUy6a0pkYl6tqddzFsxxHA8c&libraries=places&callback=initMap">
+		
+	</script>
+
+
+	<div id="container">
+		<!-- <div class="item">
+			<img src="1.jpeg"></img>
+		</div>
+		<div class="item">
+			<img src="2.jpeg"></img>
+		</div>
+		<div class="item">
+			<img src="3.jpeg"></img>
+		</div>
+		<div class="item">
+			<img src="4.jpeg"></img>
+		</div>
+		<div class="item">
+			<img src="5.jpeg"></img>
+		</div>
+		<div class="item">
+			<img src="6.jpeg"></img>
+		</div>
+		<div class="item">
+			<img src="7.jpeg"></img>
+		</div> -->
+	</div>
+</body>
+</html>
+
